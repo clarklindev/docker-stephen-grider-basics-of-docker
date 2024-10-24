@@ -332,3 +332,113 @@ docker logs 3245459743957340958743958734597345
 
 - `docker kill id`
   - kill signal issues immediate shutdown (no grace period)
+
+### 552. multi-command containers
+- the example given is using docker to spinup redis 
+- the redis cli is the interface to interact with the redis server / db
+- but redis cli is outside the container so it cannot communicate with container unless the container adds the cli inside (so it can execute commands from within container)
+
+### 553. executing commands in running containers
+- execute additional command in a container with "exec" -> `docker exec -it <container id> <command>`
+- `exec` allows running command 
+- `-it` allows input of text
+
+```
+docker exec -it 3245459743957340958743958734597345 redis-cli
+```
+
+### 554. purpose of 'it' flag
+- 'i' is so typed content gets redirected to "stdin"
+- 't' is so the output displays pretty 
+
+### 555. getting a command prompt in a container
+- "sh" giving terminal/shell access to running container -> `sh` is a command processor
+- eg. of command processors on computer: bash, powershell, sh
+- ie. open a shell (terminal) in running container
+- TODO: test by starting redis container, then get the container id (`docker ps`)
+- then `docker exec -it <container id> sh`
+- the cmd prompt that shows next is in context of the container...
+- `CTRL + D` -> exits the cmd prompt
+```
+docker exec -it 3245459743957340958743958734597345 sh
+```
+
+### 556. starting with a shell
+- if you want to load up container with shell but not have any command run...
+- CTRL + D -> exit shell
+```cmd
+docker run -it busybox sh
+
+```
+
+### 557. container isolation
+- file system is not shared between different containers (they are isolated)
+
+### 558. creating docker images
+
+#### creating a docker image
+1. a `dockerfile` (configuration defining how container should behave - the apps/programs it contains and what it does when it starts up) 
+2. dockerfile gets passed on to `docker client` (cli (terminal)) 
+3. which passes it on to `docker server` which builds a usable image.
+
+#### the docker file
+1. has base image
+2. add configuration to run commands (add dependencies (whatever to successfully create container))
+3. specify the command to run at startup
+
+### 559. buildkit for docker
+- buildkit - is enabled by default
+- when building a dockerfile, the output of final step in build process is something like:
+- note below... (ee59c34ada9890ca09145cc88ccb25d32b677fc3b61e921) is the result `image id` 
+- this is used for `docker run ee59c34ada9890ca09145cc88ccb25d32b677fc3b61e921`
+- disable buildkit to match course output `DOCKER_BUILDKIT=0 docker build .`
+
+```
+=> => exporting layers                                                      
+0.0s => => writing image sha256:ee59c34ada9890ca09145cc88ccb25d32b677fc3b61e921  0.0s
+```
+
+### progress
+- buildkit hides most output, to see more use `--progress`
+```
+docker build --progress=plain
+```
+
+### no-cache
+- disable caching
+- NOTE: do not use `--no-cache` as a `Minimizing Cache Busting` technique
+
+```
+docker build --no-cache --progress=plain .
+```
+
+### 560. build a dockerfile
+- TODO: create an image that runs `redis-server`
+- Dockerfile comments have #
+
+### step 1 - create a file called 'Dockerfile' (no extension)
+- note every line starts with an instruction
+- FROM, RUN, CMD
+- alpine is the base docker-image
+
+```Dockerfile
+# use an existing image as a base
+FROM alpine
+
+# download and install a dependency
+RUN apk add --update redis
+
+# tell image what to do when it starts a container
+CMD ["redis-server"]
+```
+
+### step 2 - run dockerfile
+- NOTE: REQUIRED - ensure you have started docker-desktop (docker daemon)
+- then from inside the folder where Dockerfile is created
+- after running it gives the image id 
+
+```cmd
+docker build .
+```
+
+### 562. dockerfile teardown
