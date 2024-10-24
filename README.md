@@ -417,9 +417,6 @@ docker build --no-cache --progress=plain .
 - Dockerfile comments have #
 
 ### step 1 - create a file called 'Dockerfile' (no extension)
-- note every line starts with an instruction
-- FROM, RUN, CMD
-- alpine is the base docker-image
 
 ```Dockerfile
 # use an existing image as a base
@@ -441,4 +438,39 @@ CMD ["redis-server"]
 docker build .
 ```
 
-### 562. dockerfile teardown
+### 561. dockerfile teardown
+- NOTE: every line starts with an instruction
+- 1st part -> command (FROM, RUN, CMD)
+- 2nd part -> instruction
+
+### 562. base image
+- base image 'alpine'
+- `alpine` is the base docker-image (we use alpine because this image has set of basic apps we need eg. apk)
+- `apk` is a package manager that comes with alpine -> program that is useful for installing and running 'redis'
+
+### 563. the build process in detail
+- behind the scenes -> the output produced when running `docker build .`
+- each step of the process... where it says `running in ...` that is when a new temp container is created and the instructions are run in that container
+
+#### step 1 - FROM (use alpine image)
+- download alpine image off docker-hub
+
+#### step 2 - RUN apk...
+- when command is run, look at previous step...and use that image - and create a new container
+- redis is installed to that container, 
+- then a temporary image is created ie. a snapshot (of file system) is taken of the container and the container is removed
+- snapshot of the container was created 
+- saves this snapshot as an image
+- and its id is returned  
+
+#### step 3 - CMD 
+- step sets primary command to run
+- look at previous step's image
+- create a new image out of it... 
+- and then notes the command to run.
+- takes a snapshot of the intermediary container (which has the primary command to run)-> then shutsdown that container
+- saves this snapshot as an image
+- returns id of snapshot
+
+### step 4
+- when there are no more instructions output the last steps image
