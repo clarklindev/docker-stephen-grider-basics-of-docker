@@ -239,3 +239,96 @@ To generate this message, Docker took the following steps:
 ```
 
 ### 542 - but really what is a container?
+- kernel -> is OS software that governs physical hardware on computer and processes running on computer
+- the interaction between hardware and software requesting resource access is called `system call`
+- namespacing allows isolating resources per process (segmenting of hardware for specific resources) (eg. co-exist python 2 and python 3) and the kernel directs the system call.
+- control groups limits the amount of resources used per process.
+- image -> file system snapshot + startup commands
+- container -> grouping of resources (running process/s + resource) 
+
+### 543 - hows the docker running on your computer
+- the kernel then isolates a section of resouce (harddrive) and makes it available for the container
+- not all OS have the concept of Namespace + control group (specific to linux)
+- DOCKER (installs a linux vm) which houses the containers and inside the "linux vm" is a "linux kernel" (`docker version` -> os arch -> linux/amd64)
+
+### 544. docker client (docker cli)
+- creating a container from an image
+- `reference to docker client` | `create + run` | `image` 
+
+```cmd
+docker run <image name>
+```
+
+### 545. overriding default commands
+- variation of `docker run ...`
+- `reference to docker client` | `create + run` | `image` | `command`
+- docker run <image name> command
+
+```cmd
+//test
+docker run busybox echo hi there
+
+//prints out all files/folders in container
+docker run busybox ls
+```
+
+### 546. list all running containers
+- test with commands that run longer than "running command and exit" eg. `docker run busybox ping google.com`
+- in second window -> list all running containers on machine (shows running containers) -> `docker ps`
+- note 'names' is random generated
+- the container id is required when we want to issue commands on a container
+
+```output
+
+CONTAINER ID   IMAGE     COMMAND             CREATED          STATUS          PORTS     NAMES
+39c69041b8ea   busybox   "ping google.com"   16 seconds ago   Up 15 seconds             happy_bhaskara
+```
+
+#### list all containers ever created on machine
+- list all containers ever created on machine
+```
+docker ps --all
+```
+
+### 547. container lifecycle
+- `docker run` = `docker create` + `docker start`
+
+#### run
+- `docker run ...` by default prints outputs to terminal
+
+#### create
+- `docker create hello-world` > returns id of containers eg. 3245459743957340958743958734597345 
+
+#### start
+- `docker start -a 3245459743957340958743958734597345`
+- `-a` whatch out for output from docker terminal and print it
+- by default docker start wont show output to terminal
+
+### 548. restarting stopped containers
+- when a container is exited, you can start it back up
+- `docker start -a id`
+
+```
+docker start -a 3245459743957340958743958734597345
+```
+
+### 549. docker system prune - removing stopped containers
+- remove stopped containers with `docker system prune` 
+- it also removes docker cache (ie. images fetched from docker-hub) 
+- then it lists removed containers
+
+### 550. retrieving output logs
+- if you ran docker start without -a flag, but want the output logs...
+- `docker logs container-id`
+
+```
+docker logs 3245459743957340958743958734597345
+```
+
+### 551. stopping containers
+- `docker stop id `
+  - shutdown in its own time
+  - default gives 10seconds to stop -> otherwise `kill` is issued
+
+- `docker kill id`
+  - kill signal issues immediate shutdown (no grace period)
