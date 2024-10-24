@@ -19,59 +19,196 @@
 - docker cli reaches out to -> docker hub -> download image (contains configuration) 
 - image is used to create container (instance of image , isolated resources)
 
-### software
+## Installing 
+- so docker is native for linux, but for windows it needs WSL (Windows Subsystem for Linux) 
+- wsl and wsl 2 is a full Linux kernel built by Microsoft, which lets Linux distributions run without managing virtual machines. 
+- Requirement to get docker working...to get docker desktop running...
+  1. WSL is enabled.
+  2. WSL 2 is set as your default version (select this at install)
+  3. The necessary Linux distributions are installed
+
+### troubleshoot - SOLVED SOLUTION
+- FIX:
+  - if you see 'docker-desktop' seems you should remove (`wsl --unregister docker-desktop`) and restart docker-desktop
+```powershell 
+  - PS C:\Windows\system32> wsl -l -v
+    NAME              STATE           VERSION
+  * docker-desktop    Stopped         2
+    Ubuntu            Running         2
+```
+
+- FIX:
+  - If you want to completely shut down the WSL instance, you would need to run wsl --shutdown in PowerShell or Command Prompt.
+```powershell
+wsl --shutdown
+```
+
+  - it should recreate docker-desktop under `wsl -l -v` if you open docker-desktop again 
+  - but this time there wont be problems...
+
+### 537. docker for mac/windows
+- Download and install all pending `Windows OS updates` ie. update windows
+
+### docker hub (online part)
+- https://hub.docker.com/
+
+- Register for a DockerHub account
+  - this is online website
+  - Visit [link](https://hub.docker.com/signup) to register for a DockerHub account (this is free) 
+
+### docker desktop (software part)
 - docker desktop -> for windows/mac 
 - includes:
   - docker client (docker cli) terminal commands (tool to interact with docker daemon)
   - docker server (docker daemon) (tool for creating containers, images, maintanance, uploading images)
 
-### docker hub
+#### Installing Docker desktop with (WSL2) on Windows 10, windows 11
+- follow these instructions [539. Installing Docker with WSL2 on Windows 10/11](https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/34345306#overview)
+- do EXACTLY as the steps tell you:
 
-#### install Docker and signup for a DockerHub account on Windows
-- [539. Installing Docker with WSL2 on Windows 10/11](https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/34345306#overview)
-1. Register for a DockerHub account
-  - Visit [link](https://hub.docker.com/signup) to register for a DockerHub account (this is free) 
-
-2. Navigate to the Docker Desktop installation page
+- Navigate to the Docker Desktop installation page
   - Windows 10 & 11 users will be able to install Docker Desktop if their computer supports the Windows Subsystem for Linux (WSL2)
-  - Download and install all pending Windows OS updates
+  - the default install for docker desktop `Docker Desktop Installer.exe` (currently v4.34.3) - you select wsl2 option at install time.
+  - NOTE: you have to run docker desktop (as Administrator)
 
-3. Run the WSL install script
-  - WSL is a Windows feature that lets you run Linux distributions on your Windows machine
-  - [docs](https://docs.microsoft.com/en-us/windows/wsl/install#install-wsl-command)
-  - Open PowerShell as Administrator and run the `wsl --install` command.
-  - This will enable and install all required features as well as install Ubuntu.
-
-4. reboot pc
-
-5. Set a Username and Password in Ubuntu
-  - After the reboot, Windows will auto-launch your new Ubuntu OS and prompt you to set a username and password.
-
-6. Install Docker Desktop
+- Install Docker Desktop
   - Navigate to the [Docker Desktop installation page](https://docs.docker.com/desktop/install/windows-install/) and click the Docker Desktop for Windows button
 
-7. Double-click the Docker Desktop Installer from your Downloads folder
+- Double-click the Docker Desktop Installer from your Downloads folder
 
-8. Click "Install anyway" if warned the app isn't Microsoft-verified
+- Click "Install anyway" if warned the app isn't Microsoft-verified
   - wait for  install to complete
-  
-9. Open the WSL terminal
-  - type search `wsl`
+  - NOTE: you need to run Docker App as Administrator or it wont open in win11.
 
-10. Check that Docker is working
-  - type `docker` 
+### WSL (WSL part)
+- NOTE: if you install docker-desktop, you need to set-up the WSL part
+- Windows Subsystem for Linux (WSL) 2 is a full Linux kernel built by Microsoft, which lets Linux distributions run without managing virtual machines. 
+- Windows Subsystem for Linux (WSL) lets developers install a Linux distribution (such as Ubuntu, OpenSUSE, Kali, Debian, Arch Linux, etc) and use Linux applications, utilities, and Bash command-line tools directly on Windows, unmodified, without the overhead of a traditional virtual machine or dualboot setup. 
+- Open PowerShell as Administrator and run the command...
 
-11. Log in to Docker
-  - login from wsl terminal
-  - You will be prompted to enter the username and password (or your Personal Access Token) you created earlier when registering for a DockerHub account.
+- cmd: `wsl` -> starts wsl if ubuntu already been installed and done
+- other params: 
+- `wsl --version`
+- `wsl --status`
+- `wsl -l -v`
+- [docs - https://docs.microsoft.com/en-us/windows/wsl/install#install-wsl-command](https://docs.microsoft.com/en-us/windows/wsl/install#install-wsl-command)
+- [docs - https://docs.docker.com/go/wsl2/](https://docs.docker.com/go/wsl2/)
+
+- using wsl, you should be able to go `docker --version` instead of `docker.exe --version` 
+- FIX: create a symlink to docker (from WSL window): `sudo ln -s /mnt/c/Program\ Files/Docker/Docker/resources/bin/docker.exe /usr/local/bin/docker`
+
+#### install docker for wsl
+```
+sudo apt update
+sudo apt install docker.io
+```
+
+#### Add Your User to the Docker Group (optional):
+- To avoid using sudo every time you run Docker commands
+```
+sudo usermod -aG docker $USER
+```
+
+#### Switching Between Distributions
+```
+wsl -d Ubuntu
+```
+#### Step 1: Install WSL 2
+#### set to WSL 2
+`wsl.exe --set-default-version 2`
+- NOTE: if you install ubuntu by running `wsl --install`, you can uninstall `wsl --unregister Ubuntu`
+- This will enable and install all required features as well as install Ubuntu (then later in docker-desktop you will set `Enable WSL Integration` in docker-desktop)
+
+#### Installing OR starting if already installed
+```PowerShell
+wsl --install
+
+```
+- should get status: `Launching ubuntu...`
+
+```PowerShell
+wsl --set-default-version 2
+```
+
+#### UNINSTALLING
+```
+wsl --unregister Ubuntu
+```
+
+- NOTE: using wsl --install is not the same as installing Ubuntu from the Microsoft Store
+
+`wsl --install`: This command installs the Windows Subsystem for Linux (WSL) and sets up a default Linux distribution, which is typically Ubuntu. It automates the installation process, including enabling necessary features.
+
+Installing from the Microsoft Store: This allows you to choose and install specific distributions of Linux, such as Ubuntu, Debian, or others. After installing, you might need to configure WSL separately.
+
+#### login docker
+- login from powershell (YOU SHOULD DO THIS EVERYTIME)
+- ONLY AFTER login run docker desktop (AS ADMIN)
+- You will be prompted to enter the username and password (or your Personal Access Token) you created earlier when registering for a DockerHub account.
 
 ```command
 docker login
 ```
+- `Your one-time device confirmation code is: XXXX-XXX.`
+- `Press ENTER to open your browser or submit your device code here: https://login.docker.com/activate`
+- so navigate to: `https://login.docker.com/activate`
 
-15. NB NOTES
+### Troubleshoot
 
-### access linux system
+- ERROR: `The command 'docker' could not be found in this WSL 2 distro. We recommend to activate the WSL integration in Docker Desktop settings.`
+  - FIX: 
+    - install docker desktop (run as admin)
+    - Enable WSL Integration:
+      - Open Docker Desktop.
+      - Go to Settings > Resources > WSL Integration.
+      - Ensure that your WSL distribution (eg. Ubuntu) is selected for integration.
+    - Enable Integration with Additional Distros:
+    - You can keep this option on for Ubuntu if you want to use Docker there as well. However, if Docker Desktop is struggling to start, you might consider turning this off temporarily to simplify the configuration.
+
+  -FIX: 
+    - If your administrator account is different to your user account, you must add the user to the docker-users group:
+    - Run Computer Management as an administrator.
+    - Navigate to Local Users and Groups > Groups > docker-users.
+    - Right-click to add the user to the group.
+    - Sign out and sign back in for the changes to take effect.
+
+  - FIX:
+    - shutdown docker: 
+  - FIX: 
+    - change firewall settings -> Windows Security app (Windows Defender Firewall) -> Firewall & network protection -> Allow an app through firewall
+      - ADD docker desktop (C:\Program Files\Docker\Docker\resources\bin\docker.exe)
+      - ADD WSL (C:\Windows\System32\wsl.exe)
+      
+```powershell
+wsl --shutdown
+```
+
+### WSL - access linux system
 - A significant difference when using WSL is that you will need to create and run your project files from within the Linux filesystem, not the Windows filesystem. This will be very important in later lectures when we cover volumes.
-- You can access your Linux system by running wsl in the Windows Search Bar. The wsl terminal will automatically open to the /mnt/c/Windows/System32 location. This is still the Windows filesystem! You will need to run the cd ~ command to change into your Ubuntu user's home directory on the Linux filesystem.
-- Going forward, all Docker commands should be run within WSL and not on the Windows file system
+- You can access your Linux system by running wsl in the Windows Search Bar. The wsl terminal will automatically open to the /mnt/c/Windows/System32 location. This is still the Windows filesystem! You will need to run the `cd ~`command to change into your Ubuntu user's home directory on the Linux filesystem.
+- Going forward, all `Docker commands` should be `run within WSL` and NOT `Windows file system`
+
+### 541. using the docker client
+
+```wsl
+docker run hello-world
+```
+- it first tries to get it locally, if it cant find it, it gets it from docker hub
+- below: cmd output
+
+```cmd
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (amd64)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+```
+
+### 542 - but really what is a container?
