@@ -28,8 +28,12 @@
   3. The necessary Linux distributions are installed
 
 ### troubleshoot - SOLVED SOLUTION
+- PROBLEM: after installing docker-desktop (docker engine running) -> further attempts to start docker engine fail.
 - FIX:
-  - if you see 'docker-desktop' seems you should remove (`wsl --unregister docker-desktop`) and restart docker-desktop
+  - after reboot -> wsl -l -d 
+  - if you see 'docker-desktop' 
+  - you should remove (`wsl --unregister docker-desktop`) and restart docker-desktop
+
 ```powershell 
   - PS C:\Windows\system32> wsl -l -v
     NAME              STATE           VERSION
@@ -42,9 +46,25 @@
 ```powershell
 wsl --shutdown
 ```
-
   - it should recreate docker-desktop under `wsl -l -v` if you open docker-desktop again 
   - but this time there wont be problems...
+
+### troubleshoot - SOLVED SOLUTION
+- windows 11 disable fast reboot 
+- win 11 -> settings -> accounts -> sign-in options -> automatically save my restartable apps and restart them when i sign back in -> OFF
+
+### troubleshoot - SOLVED SOLUTION
+- after installing Ubuntu (wsl --install)
+- you need to also install docker in wsl OR from docker-desktop -> enable `Enable Integration with Additional Distros` -> and make sure your distro eg. `Ubuntu` is checked
+
+```
+sudo apt update
+
+sudo apt upgrade
+
+sudo apt install docker-ce
+```
+
 
 ### 537. docker for mac/windows
 - Download and install all pending `Windows OS updates` ie. update windows
@@ -70,6 +90,7 @@ wsl --shutdown
   - Windows 10 & 11 users will be able to install Docker Desktop if their computer supports the Windows Subsystem for Linux (WSL2)
   - the default install for docker desktop `Docker Desktop Installer.exe` (currently v4.34.3) - you select wsl2 option at install time.
   - NOTE: you have to run docker desktop (as Administrator)
+  - NOTE: you can alternatively add logged-in user to 'docker-group' (see troubleshoot below..)
 
 - Install Docker Desktop
   - Navigate to the [Docker Desktop installation page](https://docs.docker.com/desktop/install/windows-install/) and click the Docker Desktop for Windows button
@@ -79,6 +100,7 @@ wsl --shutdown
 - Click "Install anyway" if warned the app isn't Microsoft-verified
   - wait for  install to complete
   - NOTE: you need to run Docker App as Administrator or it wont open in win11.
+  - NOTE: you can alternatively add logged-in user to 'docker-group' (see troubleshoot below..)
 
 ### WSL (WSL part)
 - NOTE: if you install docker-desktop, you need to set-up the WSL part
@@ -154,6 +176,8 @@ docker login
 - so navigate to: `https://login.docker.com/activate`
 
 ### Troubleshoot
+- Udemy Q&A - https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/34345306#questions/22551131
+- Udemy Q&A - https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/34345306#questions/22555525
 
 - ERROR: `The command 'docker' could not be found in this WSL 2 distro. We recommend to activate the WSL integration in Docker Desktop settings.`
   - FIX: 
@@ -189,14 +213,17 @@ wsl --shutdown
 - Going forward, all `Docker commands` should be `run within WSL` and NOT `Windows file system`
 
 ### 541. using the docker client
+- start docker image `hello-world`
 
 ```wsl
 docker run hello-world
 ```
 - it first tries to get it locally, if it cant find it, it gets it from docker hub
+- docker hub -> is a repository of free docker images
+- then it runs the docker image it downloaded as a container 
 - below: cmd output
 
-```cmd
+```cmd output
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
 
