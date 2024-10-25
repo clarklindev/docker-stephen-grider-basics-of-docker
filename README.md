@@ -561,7 +561,10 @@ app.listen(8080, () => {
 #### relating steps to node project
 1. FROM alpine
 2. RUN npm install
-3. CMD ["npm":"start"]
+3. CMD ["npm", "start"]
+
+#### Troubleshoot
+note: it is `CMD ["npm", "start"]` NOT `CMD ["npm": "start"]`
 
 ### 1. creating docker file
 - create `Dockerfile` inside project folder
@@ -594,6 +597,7 @@ docker build .
 0.430 /bin/sh: npm: not found
 
 ```
+- FIX: see below
 
 ### 572. REQUIRED node base image version
 #### TROUBLESHOOT - continued...
@@ -629,6 +633,7 @@ FROM node:14-alpine
 - if you build `docker build .` -> error: `package.json no-such-file-or-directory, open '/package.json'`
 - the reason is that the Dockerfile only gets the nodejs image and uses that... there is no reference to package.json
 - when building an image, none of the files in project folder where you run build command are included (by default)
+- FIX: see 575.
 
 ### 575. copying build files
 - `COPY ./ ./` (note: ./ means current working directory)
