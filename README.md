@@ -1,5 +1,13 @@
 # Docker
 
+## Table of contents
+- [Docker theory](#docker-theory)
+- [DOCKER PROJECT - a real world usecase](#docker-project---a-real-world-usecase)
+
+---
+---
+# Docker Theory
+
 ### section 24: basics of Docker
 - these notes extends from the course by stephen grider: [microservices-stephengrider-with-node-and-react](https://github.com/clarklindev/microservices-stephengrider-with-node-and-react.git)
 - externalised for easier reference (46 lessons (lesson 534 -> lesson 579))
@@ -474,3 +482,46 @@ docker build .
 
 ### step 4
 - when there are no more instructions output the last steps image
+
+### 565. rebuilds using cache
+- if you need to add additional docker build steps, docker will use cached content if there have been no changes from previous step to current step
+- so the steps that need to re-run are only from the changed step and onewards
+
+### 566. tagging an image
+- tagging an image so you dont have to use docker run <container-id>
+- tag the image `docker build -t stephengrider/redis:lastest .`
+- the `.` is the directory to use for the build
+- tag convention: `<your docker-id> / <repo/project name> : <version>`
+
+- an example
+```
+docker build -t stephengrider/redis:lastest .
+```
+
+#### run
+- note by default it will use the latest version (if version is ommited)
+```
+docker run stephengrider/redis
+```
+
+### 568. Manual Image Generation with Docker Commit
+
+- `docker commit -c 'CMD ["redis-server"]' CONTAINERID`
+
+- NOTE: in windows, creating a new image with `docker commit ...`
+  - try this format when using windows: `docker commit -c "CMD 'redis-server'" CONTAINERID`
+
+---
+# DOCKER PROJECT - a real world example usecase for docker
+
+### 569. project outline
+- TODO: create a nodejs application -> wrap inside docker container -> be able to access this app from browser running on local machine.
+
+#### Steps
+1. create a NodeJS application
+2. create a Dockerfile (that will use image to run webserver inside a container)
+3. build image from Dockerfile
+4. run image as container
+5. connect to web app from browser
+
+### 570. Node server setup
