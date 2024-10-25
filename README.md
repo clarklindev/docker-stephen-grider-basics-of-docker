@@ -684,5 +684,61 @@ docker run -p 8080:8080 stephengrider/simpleweb
 
 ```cmd
 <!-- example -->
-docker run -p 2000:8080 clarklindev/simpleweb
+docker run -p 2000:8080 stephengrider/simpleweb
+```
+
+### 577. specifying a working directory
+- TODO: startup shell on a container we build (to look at container folders and files)
+- NOTE: docker should be running
+
+```cmd
+docker run -it stephengrider/simpleweb sh
+
+ls
+```
+- you will notice files are copied to root folder of container.
+- PROBLEM: there could be conflict with any files / folder (eg. conflict 'lib' folder) in default container folder system
+- FIX: instead of copying everything into root folder directory, copy to a nested directory
+- FIX: you can specify `WORKDIR`
+
+```Dockerfile
+WORKDIR /usr/app
+```
+- any command following the setting of WORKDIR will be executed relative to this path in the container 
+- eg. setting `WORKDIR` with `COPY` afterwards will copy relative to `/user/app` 
+- if WORKDIR folder doesnt exist, it will be automatically created
+
+```
+WORKDIR /usr/app
+COPY ./ ./
+```
+- FIX: TODO -> exit running container `exit`
+- TODO: rebuild from within project folder (with tag)
+
+```cmd
+<!-- /simpleweb/ -->
+docker build -t stephengrider/simpleweb .
+
+```
+
+- run updated container
+```
+docker run -p 8080:8080 stephengrider/simpleweb
+```
+
+- spy in the updated container (can use -it -sh -> ls)
+- OR can use `docker exec` to start second process inside running container
+- TODO: open second terminal window (powershell or cmd)
+- get running container id (eg. 26ba67ffe05d) with `docker ps`
+- run docker exec -it <container id> <`program to run`>
+```
+docker exec -it 26ba67ffe05d sh
+```
+- NOTE: it takes you directly to the working folder (/user/app)...
+- if you run `ls` then you will see the project files in this folder
+- if you `cd /` you will see no project files/folder in root container (ie no conflicts)
+
+```cmd-output
+bin    etc    lib    mnt    proc   run    srv    tmp    usr
+dev    home   media  opt    root   sbin   sys    user   var
 ```
