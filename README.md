@@ -742,3 +742,38 @@ docker exec -it 26ba67ffe05d sh
 bin    etc    lib    mnt    proc   run    srv    tmp    usr
 dev    home   media  opt    root   sbin   sys    user   var
 ```
+
+### 578. unecessary rebuilds
+- if you make changes to your project and rebuild, the Dockerfile COPY step re-copies everything over instead of just the file
+- ie. all steps following also have to be re-done eg step 4 `RUN npm install` dependencies have to be re-installed
+
+### 579. minimizing cache busting and rebuilds
+- splitting up Dockerfile command
+- streamline the Dockerfile by separating dependency for commands 
+  - moving to its own command -> copying package.json and installing dependencies
+  - moving to its own command -> `COPY ./ ./` copying project files separately
+- the order of instructions inside the Dockerfile does matter
+
+### Before
+```Dockerfile
+# install dependencies
+COPY ./ ./
+RUN npm install
+```
+
+### After
+- so here we only copy the package.json to the container and do RUN command.
+- then after copy the rest of project files
+- rebuild -> `docker build -t stephengrider/simpleweb .`
+
+```Dockerfile
+COPY ./package.json ./
+RUN npm install
+
+# separate the copying of the rest of project files
+COPY ./ ./
+```
+
+### cleanup
+- docker ps -a
+- docker kill <container-id>
