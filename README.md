@@ -528,6 +528,7 @@ docker run stephengrider/redis
 - create a new project folder
 - add package.json (`npm init`)
 - in package.json -> dependencies -> using "express": "*" in your package.json means that you want to install the latest version of Express available
+- to install specific version syntax is eg: `FROM node:6.14`
 - create index.js (server)
 
 ```js
@@ -544,4 +545,144 @@ app.listen(8080, () => {
   console.log('Listening on port 8080');
 });
 
+```
+
+### 571. a few planned errors
+
+#### Node app start process
+1. install dependencies (`npm i`) -> assumes npm is installed on machine/container
+2. start server (`npm start`) -> assumes npm is installed
+
+- reminder: steps for dockerfile
+1. FROM -> specify base image
+2. RUN -> run commands to install additional programs (dependencies)
+3. CMD -> specify command to run on container startup 
+
+#### relating steps to node project
+1. FROM alpine
+2. RUN npm install
+3. CMD ["npm":"start"]
+
+### 1. creating docker file
+- create `Dockerfile` inside project folder
+
+```js
+//simpleweb/Dockerfile
+# specify base image
+FROM alpine
+
+# install dependencies
+RUN npm install
+
+# default command
+CMD ["npm", "start"]
+
+```
+### 2. build docker image
+- NOTE: REMINDER Docker-desktop needs to be running (in windows) before running next step
+
+```cmd
+<!-- //simpleweb/ -->
+
+docker build . 
+```
+
+#### TROUBLESHOOT -> ERROR
+```cmd output
+
+ > [2/2] RUN npm install:
+0.430 /bin/sh: npm: not found
+
+```
+
+### 572. REQUIRED node base image version
+#### TROUBLESHOOT - continued...
+- To properly follow along with the lectures, please add this specific version:
+- Change this: `FROM node:alpine` to this: `FROM node:14-alpine`
+- NOTE: not updating node version will give errors `npm ERR! idealTree already exists`
+- This can be resolved by adding a `WORKDIR` right after the FROM instruction: (we will be adding this in the Specifying a Working Directory lecture anyway):
+
+```Dockerfile
+
+FROM node:alpine
+WORKDIR /usr/app
+
+```
+
+### 573. Base image issues and SOLUTIONS
+- note we used `FROM alpine`
+- but alpine is a small image (therefore has limited programs included -> which doesnt include npm)
+- FIX: 1. use an image that does include `npm` or 2. install npm as a command
+- you can try find something in [docker-hub](https://hub.docker.com/)
+- [DOCKER OFFICIAL IMAGES](https://hub.docker.com/search?image_filter=official)
+- in docker terminology `alpine` is a term for 'as small and compact as possible'
+- UPDATED Dockerfile
+- rebuild: `docker build .`
+
+```Dockerfile
+# FROM node:alpine -> note: Dockerfile use node:14-alpine -> see 572. REQUIRED node base image version 
+
+FROM node:14-alpine
+```
+
+#### TROUBLESHOOT - package.json 
+- if you build `docker build .` -> error: `package.json no-such-file-or-directory, open '/package.json'`
+- the reason is that the Dockerfile only gets the nodejs image and uses that... there is no reference to package.json
+- when building an image, none of the files in project folder where you run build command are included (by default)
+
+### 575. copying build files
+- `COPY ./ ./` (note: ./ means current working directory)
+- COPY (path to folder to copy from on your machine relative to build context) (place to copy stuff to inside the container)  
+- TODO: update Dockerfile -> NB the copying should happen before `RUN`
+- cmd: `docker build .`
+
+```Dockerfile
+# ...
+
+COPY ./ ./
+RUN npm install
+
+# ...
+```
+#### tag the docker image
+- TODO: tag the project so you dont have to work with id
+- REMINDER: DO NOT FORGET THE . at the end of docker build command
+- `docker build -t stephengrider/simpleweb .`
+```cmd
+docker build -t stephengrider/simpleweb .
+```
+
+### start this image we tagged
+- `docker run stephengrider/simpleweb`
+
+```
+docker run stephengrider/simpleweb
+```
+- cmd status: listening on port 8080
+
+### 576. container port forwarding
+- browser is making request to port 8080
+- NOTE: by default no traffic to computer (:8080) is routed to docker container
+- container has its own isolated set of ports
+- TODO: setup explicit port mapping for INCOMING REQUESTS (requests to a port on localnetwork should be forwarded to a port on container)
+  - adjust docker's run command (NOTE: this is NOT done inside dockerfile -> it is a runtime constraint)
+- NOTE: docker container can make its own requests to outside (OUTBOUND)
+- to setup docker with portmapping (-p)
+- docker run -p <`route incoming requests for this port on local host`> : <`to this port inside the container`> <`image id / image tag-name`>
+
+```cmd
+<!-- example -->
+docker run -p 8080:8080 stephengrider/simpleweb
+```
+
+- test: from browser `localhost:8080`
+- output on page: `Hi there`
+
+- NOTE: the FROM port / TO ports do not have to be identical
+- the docker port is specified in app server file (index.js) BUT the from port in localhost can be anything..
+- eg. forwards any request from localhost port :2000 to the docker container 
+
+```cmd
+<!-- example -->
+docker run -p 2000:8080 clarklindev/simpleweb
 ```
