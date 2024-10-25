@@ -2,7 +2,7 @@
 
 ## Table of contents
 - [Docker theory](#docker-theory)
-- [DOCKER PROJECT - a real world usecase](#docker-project---a-real-world-usecase)
+- [DOCKER PROJECT - A Real World usecase](#docker-project---a-real-world-example-use-case-for-docker)
 
 ---
 ---
@@ -512,7 +512,7 @@ docker run stephengrider/redis
   - try this format when using windows: `docker commit -c "CMD 'redis-server'" CONTAINERID`
 
 ---
-# DOCKER PROJECT - a real world example usecase for docker
+# DOCKER PROJECT - a real world example use case for docker
 
 ### 569. project outline
 - TODO: create a nodejs application -> wrap inside docker container -> be able to access this app from browser running on local machine.
