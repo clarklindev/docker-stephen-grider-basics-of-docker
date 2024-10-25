@@ -264,13 +264,13 @@ To generate this message, Docker took the following steps:
 - `reference to docker client` | `create + run` | `image` 
 
 ```cmd
-docker run <image name>
+docker run `image name`
 ```
 
 ### 545. overriding default commands
 - variation of `docker run ...`
 - `reference to docker client` | `create + run` | `image` | `command`
-- docker run <image name> command
+- docker run `image name` command
 
 ```cmd
 //test
@@ -347,7 +347,7 @@ docker logs 3245459743957340958743958734597345
 - but redis cli is outside the container so it cannot communicate with container unless the container adds the cli inside (so it can execute commands from within container)
 
 ### 553. executing commands in running containers
-- execute additional command in a container with "exec" -> `docker exec -it <container id> <command>`
+- execute additional command in a container with "exec" -> `docker exec -it "container id" "command"`
 - `exec` allows running command 
 - `-it` allows input of text
 
@@ -364,7 +364,7 @@ docker exec -it 3245459743957340958743958734597345 redis-cli
 - eg. of command processors on computer: bash, powershell, sh
 - ie. open a shell (terminal) in running container
 - TODO: test by starting redis container, then get the container id (`docker ps`)
-- then `docker exec -it <container id> sh`
+- then `docker exec -it "container id" sh`
 - the cmd prompt that shows next is in context of the container...
 - `CTRL + D` -> exits the cmd prompt
 ```
@@ -488,10 +488,10 @@ docker build .
 - so the steps that need to re-run are only from the changed step and onewards
 
 ### 566. tagging an image
-- tagging an image so you dont have to use docker run <container-id>
+- tagging an image so you dont have to use docker run `container-id`
 - tag the image `docker build -t stephengrider/redis:lastest .`
 - the `.` is the directory to use for the build
-- tag convention: `<your docker-id> / <repo/project name> : <version>`
+- tag convention: `"your docker-id" / "repo/project name" : "version"`
 
 - an example
 ```
@@ -668,7 +668,7 @@ docker run stephengrider/simpleweb
   - adjust docker's run command (NOTE: this is NOT done inside dockerfile -> it is a runtime constraint)
 - NOTE: docker container can make its own requests to outside (OUTBOUND)
 - to setup docker with portmapping (-p)
-- docker run -p <`route incoming requests for this port on local host`> : <`to this port inside the container`> <`image id / image tag-name`>
+- docker run -p `route incoming requests for this port on local host` : `to this port inside the container` `image id / image tag-name`
 
 ```cmd
 <!-- example -->
@@ -730,7 +730,7 @@ docker run -p 8080:8080 stephengrider/simpleweb
 - OR can use `docker exec` to start second process inside running container
 - TODO: open second terminal window (powershell or cmd)
 - get running container id (eg. 26ba67ffe05d) with `docker ps`
-- run docker exec -it <container id> <`program to run`>
+- run docker exec -it `container id` `program to run`
 ```
 docker exec -it 26ba67ffe05d sh
 ```
@@ -776,4 +776,4 @@ COPY ./ ./
 
 ### cleanup
 - docker ps -a
-- docker kill <container-id>
+- docker kill `container-id`
