@@ -525,3 +525,23 @@ docker run stephengrider/redis
 5. connect to web app from browser
 
 ### 570. Node server setup
+- create a new project folder
+- add package.json (`npm init`)
+- in package.json -> dependencies -> using "express": "*" in your package.json means that you want to install the latest version of Express available
+- create index.js (server)
+
+```js
+//index.js
+const express = require('express');
+
+const app = express();
+
+app.get('/', (req, res) => {
+  res.send('Hi there');
+});
+
+app.listen(8080, () => {
+  console.log('Listening on port 8080');
+});
+
+```
