@@ -581,6 +581,16 @@ RUN npm install
 CMD ["npm", "start"]
 
 ```
+
+### list all docker images
+- list all docker images: `docker images -a`
+
+### deleting
+- `docker rmi -f <image_id>`
+
+#### delete all images with tags `<none>`
+-If you want to remove all images with `<none>` tags in one go: `docker rmi -f $(docker images -q -f "dangling=true")`
+
 ### 2. build docker image
 - NOTE: REMINDER Docker-desktop needs to be running (in windows) before running next step
 
