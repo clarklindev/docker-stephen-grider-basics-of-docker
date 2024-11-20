@@ -1,15 +1,22 @@
 # Docker
 
+- 46 lessons (3hrs 3min) 
+- this summarises this section into a 30min read -> demystify roadblocks for Docker installing / troubleshooting
+- NOTE: it takes longer than the 3hrs 3min stated to go through the course section though.
+
 ## Table of contents
-- [Docker theory](#docker-theory)
-- [DOCKER PROJECT - A Real World usecase](#docker-project---a-real-world-example-use-case-for-docker)
+- [1. Docker theory](#1-docker-theory)
+- [2. Installing WSL2 AND Docker-Desktop (Docker)](#2-installing-wsl2-and-docker-desktop-docker)
+- [3. Using Docker](#3-using-docker)
+- [4. DOCKER PROJECT - A Real World usecase](#4-docker-project---a-real-world-example-use-case-for-docker)
 
 ---
 ---
-# Docker Theory
+# 1. Docker Theory
 
 ### section 24: basics of Docker
-- these notes extends from the course by stephen grider: [microservices-stephengrider-with-node-and-react](https://github.com/clarklindev/microservices-stephengrider-with-node-and-react.git)
+- these notes extends from my own course notes here: [microservices-stephengrider-with-node-and-react](https://github.com/clarklindev/microservices-stephengrider-with-node-and-react.git) 
+  - source: udemy - stephen grider - [microservices-with-node-js-and-react](https://www.udemy.com/course/microservices-with-node-js-and-react/)
 - externalised for easier reference (46 lessons (lesson 534 -> lesson 579))
 
 ### 535. why use docker?
@@ -27,6 +34,9 @@
 - docker cli reaches out to -> docker hub -> download image (contains configuration) 
 - image is used to create container (instance of image , isolated resources)
 
+---
+---
+# 2. Installing WSL2 AND Docker-Desktop (Docker)
 - here is how to install docker (summarised) -> see notes of lessons for details...
 
 ## create docker hub account
@@ -37,9 +47,15 @@
 - wsl and wsl 2 is a full Linux kernel built by Microsoft, which lets Linux distributions run without managing virtual machines. 
 
 ### install WSL
+- NOTE: installing docker desktop also installs docker cli
+- basic wsl install command (if installing wsl for first time, installs WSL, AND gets the default set linux distribution: Ubuntu)
+
 ```powershell
 wsl --install
+```
 
+- otherwise Install using `wsl --install -d <Distro>`
+```
 PS C:\Users\admin> wsl --install
 Windows Subsystem for Linux is already installed.
 The following is a list of valid distributions that can be installed.
@@ -73,6 +89,8 @@ Press any key to continue...
 ```
 
 ### update WSL 2
+- you might need to update wsl first
+
 ```powershell
 wsl --update
 ```
@@ -100,7 +118,7 @@ passwd: password updated successfully
 ```
 
 ### Set a Username and Password in Ubuntu
-- (unless this is already done...) After the reboot, Windows will auto-launch your new Ubuntu OS and prompt you to set a username and password.
+- (unless this is already done...) After the reboot, Windows will (in powershell) auto-launch your new Ubuntu OS and prompt you to set a username and password.
 
 ### Requirement to get docker working...to get docker desktop running...
   1. WSL is enabled.
@@ -139,14 +157,28 @@ wsl --shutdown
 - after installing Ubuntu (wsl --install)
 - you need to also install docker in wsl OR from docker-desktop -> enable `Enable Integration with Additional Distros` -> and make sure your distro eg. `Ubuntu` is checked
 
+- NOTE: YOU DO NOT NEED TO INSTALL DOCKER IN WSL, WSL INSTALLS UBUNTU -> WHICH YOU LINK DOCKER VIA DOCKER DESKTOP 
+<!--
 ```
 sudo apt update
 
 sudo apt upgrade
 
 sudo apt install docker-ce
-```
+``` -->
 
+#### Expected outcome from all steps discussed
+- The expected outcome after the process above is that: 
+  - you have WSL installed 
+  - linux (Ubuntu) is working
+  - docker desktop is installed
+  - docker desktop -> is running
+  - docker desktop -> kubernetes is running (OPTIONAL -> will be required when using Skaffold for automating docker)
+  - docker-hub account created, logged-in (required for pushing docker images)
+
+![docker-desktop-installed-running-screengrab-markings.png](exercise_files/docker-desktop-installed-running-screengrab-markings.png)
+
+---
 
 ### 537. docker for mac/windows
 - Download and install all pending `Windows OS updates` ie. update windows
@@ -198,16 +230,17 @@ sudo apt install docker-ce
 - [docs - https://docs.microsoft.com/en-us/windows/wsl/install#install-wsl-command](https://docs.microsoft.com/en-us/windows/wsl/install#install-wsl-command)
 - [docs - https://docs.docker.com/go/wsl2/](https://docs.docker.com/go/wsl2/)
 
-- using wsl, you should be able to go: `docker --version` instead of `docker.exe --version` 
-- FIX: create a symlink to docker (from WSL window): `sudo ln -s /mnt/c/Program\ Files/Docker/Docker/resources/bin/docker.exe /usr/local/bin/docker`
+<!-- - using wsl, you should be able to go: `docker --version` instead of `docker.exe --version`  -->
+<!-- - FIX: create a symlink to docker (from WSL window): `sudo ln -s /mnt/c/Program\ Files/Docker/Docker/resources/bin/docker.exe /usr/local/bin/docker` -->
 
-#### install docker for wsl
+<!-- #### install docker for wsl
 ```
 sudo apt update
 sudo apt install docker.io
-```
+``` -->
 
 #### Add Your User to the Docker Group (optional):
+- this is if you are not windows admin ie a normal local account
 - To avoid using sudo every time you run Docker commands
 ```
 sudo usermod -aG docker $USER
@@ -230,9 +263,12 @@ wsl --install
 ```
 - should get status: `Launching ubuntu...`
 
+<!--
+
+NOTE THIS IS NOT NECESSARY AS wsl --install BY DEFAULT INSTALLS WSL VERSION 2
 ```PowerShell
 wsl --set-default-version 2
-```
+``` -->
 
 #### UNINSTALLING
 ```
@@ -294,6 +330,10 @@ wsl --shutdown
 - You can access your Linux system by running wsl in the Windows Search Bar. The wsl terminal will automatically open to the /mnt/c/Windows/System32 location. This is still the Windows filesystem! You will need to run the `cd ~`command to change into your Ubuntu user's home directory on the Linux filesystem.
 - Going forward, all `Docker commands` should be `run within WSL` and NOT `Windows file system`
 
+---
+---
+# 3. Using Docker
+
 ### 541. using the docker client
 - start docker image `hello-world`
 
@@ -320,7 +360,7 @@ To generate this message, Docker took the following steps:
 
 ```
 
-### 542 - but really what is a container?
+### 542. but really what is a container?
 - kernel -> is OS software that governs physical hardware on computer and processes running on computer
 - the interaction between hardware and software requesting resource access is called `system call`
 - namespacing allows isolating resources per process (segmenting of hardware for specific resources) (eg. co-exist python 2 and python 3) and the kernel directs the system call.
@@ -328,7 +368,7 @@ To generate this message, Docker took the following steps:
 - image -> file system snapshot + startup commands
 - container -> grouping of resources (running process/s + resource) 
 
-### 543 - hows the docker running on your computer
+### 543. hows the docker running on your computer
 - the kernel then isolates a section of resouce (harddrive) and makes it available for the container
 - not all OS have the concept of Namespace + control group (specific to linux)
 - DOCKER (installs a linux vm) which houses the containers and inside the "linux vm" is a "linux kernel" (`docker version` -> os arch -> linux/amd64)
@@ -586,7 +626,8 @@ docker run stephengrider/redis
   - try this format when using windows: `docker commit -c "CMD 'redis-server'" CONTAINERID`
 
 ---
-# DOCKER PROJECT - a real world example use case for docker
+---
+# 4. DOCKER PROJECT - a real world example use case for docker
 
 ### 569. project outline
 - TODO: create a nodejs application -> wrap inside docker container -> be able to access this app from browser running on local machine.
