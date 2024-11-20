@@ -27,18 +27,92 @@
 - docker cli reaches out to -> docker hub -> download image (contains configuration) 
 - image is used to create container (instance of image , isolated resources)
 
-## Installing 
+- here is how to install docker (summarised) -> see notes of lessons for details...
+
+## create docker hub account
+- todo: register -> Register for a [DockerHub](https://hub.docker.com) account
+
+## Installing WSL
 - so docker is native for linux, but for windows it needs WSL (Windows Subsystem for Linux) 
 - wsl and wsl 2 is a full Linux kernel built by Microsoft, which lets Linux distributions run without managing virtual machines. 
-- Requirement to get docker working...to get docker desktop running...
+
+### install WSL
+```powershell
+wsl --install
+
+PS C:\Users\admin> wsl --install
+Windows Subsystem for Linux is already installed.
+The following is a list of valid distributions that can be installed.
+Install using 'wsl --install -d <Distro>'.
+
+NAME                            FRIENDLY NAME
+Ubuntu                          Ubuntu
+Debian                          Debian GNU/Linux
+kali-linux                      Kali Linux Rolling
+Ubuntu-18.04                    Ubuntu 18.04 LTS
+Ubuntu-20.04                    Ubuntu 20.04 LTS
+Ubuntu-22.04                    Ubuntu 22.04 LTS
+Ubuntu-24.04                    Ubuntu 24.04 LTS
+OracleLinux_7_9                 Oracle Linux 7.9
+OracleLinux_8_7                 Oracle Linux 8.7
+OracleLinux_9_1                 Oracle Linux 9.1
+openSUSE-Leap-15.6              openSUSE Leap 15.6
+SUSE-Linux-Enterprise-15-SP5    SUSE Linux Enterprise 15 SP5
+SUSE-Linux-Enterprise-15-SP6    SUSE Linux Enterprise 15 SP6
+openSUSE-Tumbleweed             openSUSE Tumbleweed
+```
+
+#### TROUBLESHOOT 
+- WSL requires update
+```
+Installing, this may take a few minutes...
+WslRegisterDistribution failed with error: 0x800701bc
+Error: 0x800701bc WSL 2 requires an update to its kernel component. For information please visit https://aka.ms/wsl2kernel
+
+Press any key to continue...
+```
+
+### update WSL 2
+```powershell
+wsl --update
+```
+
+### install linux
+- install the linux distribution
+- NOTE: Upgrade version from WSL 1 to WSL 2 -> Linux installations, installed using the wsl --install command, will be set to WSL 2 by default.
+
+```powershell
+wsl --install -d <Distro>
+```
+
+- this is the result:
+```
+PS C:\Users\***> wsl --install -d Ubuntu
+Ubuntu is already installed.
+Launching Ubuntu...
+Installing, this may take a few minutes...
+Please create a default UNIX user account. The username does not need to match your Windows username.
+For more information visit: https://aka.ms/wslusers
+Enter new UNIX username:
+New password:
+Retype new password:
+passwd: password updated successfully
+```
+
+### Set a Username and Password in Ubuntu
+- (unless this is already done...) After the reboot, Windows will auto-launch your new Ubuntu OS and prompt you to set a username and password.
+
+### Requirement to get docker working...to get docker desktop running...
   1. WSL is enabled.
   2. WSL 2 is set as your default version (select this at install)
   3. The necessary Linux distributions are installed
 
 ### troubleshoot - SOLVED SOLUTION
+- To see whether your Linux distribution is set to WSL 1 or WSL 2, use the command: `wsl -l -v`.
 - PROBLEM: after installing docker-desktop (docker engine running) -> further attempts to start docker engine fail.
+
 - FIX:
-  - after reboot -> wsl -l -d 
+  - after reboot -> `wsl -l -v` 
   - if you see 'docker-desktop' 
   - you should remove (`wsl --unregister docker-desktop`) and restart docker-desktop
 
@@ -124,7 +198,7 @@ sudo apt install docker-ce
 - [docs - https://docs.microsoft.com/en-us/windows/wsl/install#install-wsl-command](https://docs.microsoft.com/en-us/windows/wsl/install#install-wsl-command)
 - [docs - https://docs.docker.com/go/wsl2/](https://docs.docker.com/go/wsl2/)
 
-- using wsl, you should be able to go `docker --version` instead of `docker.exe --version` 
+- using wsl, you should be able to go: `docker --version` instead of `docker.exe --version` 
 - FIX: create a symlink to docker (from WSL window): `sudo ln -s /mnt/c/Program\ Files/Docker/Docker/resources/bin/docker.exe /usr/local/bin/docker`
 
 #### install docker for wsl
