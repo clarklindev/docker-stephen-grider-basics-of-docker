@@ -167,6 +167,10 @@ sudo apt upgrade
 sudo apt install docker-ce
 ``` -->
 
+### troubleshoot - SOLVED SOLUTION
+- trouble shooting docker desktop -> kubernetes not runnning...
+- see my Kubernetes installation notes: section 64. [microservices-stephengrider-with-node-and-react](https://github.com/clarklindev/microservices-stephengrider-with-node-and-react?tab=readme-ov-file#section-04---orchestrating-collections-of-services-with-kubernetes-3hr25min)
+
 #### Expected outcome from all steps discussed
 - The expected outcome after the process above is that: 
   - you have WSL installed 
