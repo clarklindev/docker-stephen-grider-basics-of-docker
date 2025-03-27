@@ -43,8 +43,19 @@
 - todo: register -> Register for a [DockerHub](https://hub.docker.com) account
 
 ## Installing WSL
+- NOTE: In Windows, if you install `DOCKER FOR DESKTOP` it will install WSL (and WSL 2)
+
 - so docker is native for linux, but for windows it needs WSL (Windows Subsystem for Linux) 
 - wsl and wsl 2 is a full Linux kernel built by Microsoft, which lets Linux distributions run without managing virtual machines. 
+
+<img
+src='exercise_files/wsl-install.png'
+alt='wsl-install.png'
+width=600
+/>
+- screenshot showing that: 
+1. you need to install WSL (windows subsystem for linux) if you install Docker for Windows, WSL will be installed and updated.
+2. you need a WSL 2 distro like ubuntu
 
 ### install WSL
 - NOTE: installing docker desktop also installs docker cli
@@ -53,6 +64,19 @@
 ```powershell
 wsl --install
 ```
+
+<img
+src='exercise_files/wsl-install-2.png'
+alt='wsl-install-2.png'
+width=600
+/>
+
+-enable the distro
+<img
+src='exercise_files/docker-desktop-resource.png'
+alt='docker-desktop-resource.png'
+width=600
+/>
 
 - otherwise Install using `wsl --install -d <Distro>`
 ```
@@ -180,7 +204,11 @@ sudo apt install docker-ce
   - docker desktop -> kubernetes is running (OPTIONAL -> will be required when using Skaffold for automating docker)
   - docker-hub account created, logged-in (required for pushing docker images)
 
-![docker-desktop-installed-running-screengrab-markings.png](exercise_files/docker-desktop-installed-running-screengrab-markings.png)
+<img
+src='exercise_files/docker-desktop-installed-running-screengrab-markings.png'
+alt='docker-desktop-installed-running-screengrab-markings.png'
+width=600
+/>
 
 ---
 
